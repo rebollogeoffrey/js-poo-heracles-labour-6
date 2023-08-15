@@ -5,7 +5,6 @@ class Monster extends Fighter {
 	}
 
 	getDirection(monster) {
-		console.log(monster);
 		const direction = {
 			1: 'N',
 			2: 'S',

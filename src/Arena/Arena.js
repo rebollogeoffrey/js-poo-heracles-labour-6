@@ -139,4 +139,129 @@ class Arena {
     document.getElementById("error").innerText = msg;
     return death;
   }
+
+  isDiggeable(tile) {
+    let msg = "";
+    if (!tile.image.includes("grass")) {
+      const tileNameLower = tile.image.slice(9, -4)
+      const tileName = tileNameLower.charAt(0).toUpperCase() + tileNameLower.slice(1);
+
+      msg = `You can't dig here!\nThis is a ${tileName} but you can only dig on grass.`
+      document.getElementById("error").innerText = msg;
+      return false
+    } else {
+      tile.dig();
+      return true
+    }
+  }
+
+
+  isHoldingShovel() {
+    let msg = "";
+    if (!this.hero.accessory) {
+      msg = `${this.hero.name} doesn't have a shovel.`
+      document.getElementById("error").innerText = msg;
+      return false
+    } else {
+      return true
+    }
+  }
+
+  getAdjacentTiles(tile) {
+    const northTile = {
+      n: 'N',
+      x: tile.x - 1,
+      y: tile.y
+    }
+    const southTile = {
+      n: 'S',
+      x: tile.x + 1,
+      y: tile.y
+    }
+    const eastTile = {
+      n: 'E',
+      x: tile.x,
+      y: tile.y + 1
+    }
+    const westTile = {
+      n: 'W',
+      x: tile.x,
+      y: tile.y - 1
+    }
+
+
+    // If the tiles adjacent to the hero are on the map, fill the array with it, else fill with null
+    const arrayTiles = [
+      this.checkOnMap(northTile.x, northTile.y) ? northTile : null,
+      this.checkOnMap(eastTile.x, eastTile.y) ? eastTile : null,
+      this.checkOnMap(southTile.x, southTile.y) ? southTile : null,
+      this.checkOnMap(westTile.x, westTile.y) ? westTile : null,
+    ];
+    return arrayTiles
+  }
+
+  fill(heroTile) {
+    this.getAdjacentTiles(heroTile).map((adjTile) => {
+      if (adjTile) {
+
+
+        //-------------
+        if (grass.includes(heroTile)) {
+          // Find index of heroTile
+          const heroTileIndex = grass.indexOf(heroTile);
+
+          // Delete heroTile from grass array
+          grass.splice(heroTileIndex, 1)
+
+          // Check if splice was delicious (in splice there's "ice" as in "ice cream" :-p )
+          console.log('grass.includes(heroTile) :>> ', grass.includes(heroTile));
+          // It should be alright, right ?
+
+          // Create newHeroTile as water type where hero is digging
+          newHeroTile = new Water(heroTile.x, heroTile.y);
+          // Add newHeroTile to water array
+          water.push(newHeroTile);
+
+          // Check if dev's work was good
+          console.log('water[water.indexOf(heroTile)] :>> ', water[water.indexOf(heroTile)]);
+
+          // Cup of coffee of victory \o/
+        }
+      }
+    })
+  }
+  /**
+   * 
+   * testesttesttest
+   fill(heroTile) {
+   
+    this.getAdjacentTiles(heroTile).map((adjTile) => {
+    
+      if (adjTile) {
+      
+        if (this.getTile(adjTile.x, adjTile.y).image.includes("water")) {
+        
+        if (this.tiles.grass.includes(heroTile)){
+          console.log('index of heroTile :>> ', this.tiles.grass.indexOf(heroTile));
+        }
+          
+          
+        } else {
+          return false;
+        }
+      }
+    })
+  }
+
+  this.tiles = [...grass, ...water, ...bush, ...building]
+   */
+
+  digArena() {
+    if (this.isHoldingShovel()) {
+      const tile = this.getTile(this.hero.x, this.hero.y);
+      this.isDiggeable(tile);
+
+      this.fill(tile)
+    }
+  }
 }
